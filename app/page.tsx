@@ -7,8 +7,10 @@ import Logo from "@/components/logo"
 import HolographicBackground from "@/components/holographic-background"
 import CursorEffect from "@/components/cursor-effect"
 import SkillsSection from "@/components/skills-section"
-import ProfilePicture from "@/components/profile-picture"
 import DarkVeil from "@/components/dark-veil"
+import dynamic from "next/dynamic"
+
+const Lanyard = dynamic(() => import("@/components/Lanyard"), { ssr: false })
 
 export default function Home() {
   return (
@@ -20,6 +22,10 @@ export default function Home() {
 
       <HolographicBackground />
       <CursorEffect />
+
+      <div className="fixed right-0 top-0 w-1/3 h-full z-20 pointer-events-none">
+        <Lanyard position={[3, 0, 15]} gravity={[0, -40, 0]} className="w-full h-full pointer-events-auto" />
+      </div>
 
       {/* Navigation */}
       <header className="container mx-auto py-6 px-4 relative z-10">
@@ -52,10 +58,7 @@ export default function Home() {
             <div className="absolute -top-32 -left-32 w-64 h-64 bg-purple-600/30 rounded-full blur-[100px]"></div>
             <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-fuchsia-600/30 rounded-full blur-[100px]"></div>
 
-            {/* Profile Picture */}
-            <div className="flex justify-center mb-8">
-              <ProfilePicture />
-            </div>
+            <div className="h-[200px] mb-8"></div>
 
             <div className="space-y-2 relative">
               <p className="text-purple-300">Judges a book by</p>
@@ -191,7 +194,7 @@ export default function Home() {
         {/* Contact Section */}
         <section id="contact" className="container mx-auto px-4 py-20 text-center relative">
           <div className="backdrop-blur-lg bg-purple-900/10 rounded-xl p-12 border border-purple-500/20 max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-purple-300 to-fuchsia-300 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(168,85,247,0.5)]">
+            <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-purple-300 to-fuchsia-300 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]">
               Get In Touch
             </h2>
             <p className="text-purple-100 max-w-xl mx-auto mb-8">
