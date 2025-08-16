@@ -2,13 +2,17 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Canvas, extend, useFrame } from "@react-three/fiber";
+import { Canvas, extend, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Lightformer, useGLTF, useTexture } from "@react-three/drei";
 import { BallCollider, CuboidCollider, Physics, RigidBody, useRopeJoint, useSphericalJoint } from "@react-three/rapier";
 import { MeshLineGeometry, MeshLineMaterial } from "meshline";
 import * as THREE from "three";
 
 extend({ MeshLineGeometry, MeshLineMaterial });
+
+// Preload 3D assets to avoid 404s and first-frame hitches
+(useGLTF as any).preload?.("/lanyard/card.glb");
+(useTexture as any).preload?.("/lanyard/lanyard.png");
 
 type Vec3 = [number, number, number];
 
@@ -22,7 +26,7 @@ export interface LanyardProps {
 
 export default function LanyardClient({
   position = [0, 0, 22],       // pulled back so it’s visible
-  gravity = [0, -9.81, 0],     // softer for stability
+  gravity = [0, -40, 0],     // softer for stability
   fov = 22,
   transparent = true,
   className = "w-full h-screen",
@@ -30,8 +34,10 @@ export default function LanyardClient({
   return (
     <div className={`relative z-0 flex items-center justify-center ${className}`}>
       <Canvas
+        className="pointer-events-auto"
         camera={{ position, fov }}
         gl={{ alpha: transparent }}
+        dpr={[1, 1.5]}
         onCreated={({ gl }) => gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1)}
       >
         <ambientLight intensity={Math.PI} />
@@ -56,6 +62,7 @@ interface BandProps {
 }
 
 function Band({ maxSpeed = 50, minSpeed = 0 }: BandProps) {
+  const { size } = useThree();
   const band = useRef<THREE.Mesh | null>(null);
   const fixed = useRef<any>(null);
   const j1 = useRef<any>(null);
@@ -68,7 +75,7 @@ function Band({ maxSpeed = 50, minSpeed = 0 }: BandProps) {
   const rot = new THREE.Vector3();
   const dir = new THREE.Vector3();
 
-  const segmentProps = {
+  const segmentProps: any = {
     type: "dynamic" as const,
     canSleep: true,
     colliders: false,
@@ -87,27 +94,33 @@ function Band({ maxSpeed = 50, minSpeed = 0 }: BandProps) {
   }
 
   // Seed meshline geometry with points at frame 0 to prevent "count" errors
-  const [meshLineGeometry] = useState(() => {
+    const [meshLineGeometry] = useState(() => {
     const g = new MeshLineGeometry();
+    // seed with a gentle arc; actual rope points come from physics joints so this is just a safe seed
     g.setPoints([
-      new THREE.Vector3(0, 4, 0),
-      new THREE.Vector3(0.5, 4, 0),
-      new THREE.Vector3(1, 4, 0),
-      new THREE.Vector3(1.5, 4, 0),
-      new THREE.Vector3(2, 4, 0),
+      new THREE.Vector3(0, 12, 0),
+      new THREE.Vector3(0.5, 9, 0),
+      new THREE.Vector3(1, 6, 0),
+      new THREE.Vector3(1.5, 3, 0),
+      new THREE.Vector3(2, 0, 0),
     ]);
     return g;
   });
+
+  // Debug logs to confirm assets and nodes load at runtime (temporary)
+  // eslint-disable-next-line no-console
+  console.log("Lanyard assets:", { nodes, materials, texture, meshLinePoints: (meshLineGeometry as any)?.array?.length ?? "unknown" });
 
   // Rope curve
   const [curve] = useState(
     () =>
       new THREE.CatmullRomCurve3([
-        new THREE.Vector3(0, 4, 0),
-        new THREE.Vector3(0.5, 4, 0),
-        new THREE.Vector3(1, 4, 0),
-        new THREE.Vector3(1.5, 4, 0),
-        new THREE.Vector3(2, 4, 0),
+        // match the seeded geometry: gentle arc; runtime updates come from Rapier joints
+        new THREE.Vector3(0, 12, 0),
+        new THREE.Vector3(0.5, 9, 0),
+        new THREE.Vector3(1, 6, 0),
+        new THREE.Vector3(1.5, 3, 0),
+        new THREE.Vector3(2, 0, 0),
       ])
   );
   (curve as any).curveType = "chordal";
@@ -178,22 +191,23 @@ function Band({ maxSpeed = 50, minSpeed = 0 }: BandProps) {
 
   return (
     <>
-      <group position={[0, 4, 0]}>
-        <RigidBody ref={fixed} {...segmentProps} type="fixed" />
-        <RigidBody position={[0.5, 0, 0]} ref={j1} {...segmentProps}>
-          <BallCollider args={[0.1]} />
+      <group position={[-1, 7, 0]}>
+        {/* anchor the top of the band above the hero so it extends slightly off-screen */}
+        <RigidBody ref={fixed} position={[0, 18, 0]} {...segmentProps} type="fixed" />
+        <RigidBody position={[0.5, 12, 0]} ref={j1} {...segmentProps}>
+          <BallCollider args={[0.12]} />
         </RigidBody>
-        <RigidBody position={[1, 0, 0]} ref={j2} {...segmentProps}>
-          <BallCollider args={[0.1]} />
+        <RigidBody position={[1, 6, 0]} ref={j2} {...segmentProps}>
+          <BallCollider args={[0.11]} />
         </RigidBody>
-        <RigidBody position={[1.5, 0, 0]} ref={j3} {...segmentProps}>
-          <BallCollider args={[0.1]} />
+        <RigidBody position={[1.5, 2, 0]} ref={j3} {...segmentProps}>
+          <BallCollider args={[0.10]} />
         </RigidBody>
 
-        <RigidBody position={[2, 0, 0]} ref={card} {...segmentProps} type={dragged ? "kinematicPosition" : "dynamic"}>
+        <RigidBody position={[2, -4, 0]} ref={card} {...segmentProps} type={dragged ? "kinematicPosition" : "dynamic"}>
           <CuboidCollider args={[0.8, 1.125, 0.01]} />
           <group
-            scale={2.25}
+            scale={3}
             position={[0, -1.2, -0.05]}
             onPointerOver={() => setHovered(true)}
             onPointerOut={() => setHovered(false)}
@@ -227,19 +241,25 @@ function Band({ maxSpeed = 50, minSpeed = 0 }: BandProps) {
             )}
           </group>
         </RigidBody>
+        {/* Debug marker: visible red sphere to confirm the Canvas and scene are rendering */}
+        <mesh position={[2, -4, 0]}>
+          <sphereGeometry args={[0.5, 16, 16]} />
+          <meshStandardMaterial color="red" emissive="red" />
+        </mesh>
       </group>
 
-      <mesh ref={band} geometry={meshLineGeometry as any}>
+      <mesh ref={band} geometry={meshLineGeometry as any} renderOrder={50}>
         <meshLineMaterial
           color="#8B5CF6"
           depthTest={false}
-          transparent={false}
-          resolution={isSmall ? [1000, 2000] : [1000, 1000]}
+          depthWrite={false}
+          transparent={true}
+          opacity={1}
+          resolution={[size.width, size.height]}
           useMap={!!texture}
           map={texture as any}
           repeat={[-4, 1]}
-          lineWidth={2}
-          opacity={1}
+          lineWidth={0.12}
         />
       </mesh>
     </>

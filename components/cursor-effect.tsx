@@ -109,9 +109,9 @@ export default function CursorEffect() {
       {/* Particles */}
       <AnimatePresence>
         {particles.map((particle) => (
-          <motion.div
+            <motion.div
             key={particle.id}
-            className="fixed pointer-events-none z-40"
+            className="fixed pointer-events-none z-[99999]"
             initial={{ opacity: 1, scale: 1 }}
             animate={{
               opacity: particle.life / particle.maxLife,
@@ -138,7 +138,7 @@ export default function CursorEffect() {
 
       {/* Main cursor with multiple layers */}
       <motion.div
-        className="fixed pointer-events-none z-50"
+        className="fixed pointer-events-none z-[99999]"
         animate={{
           x: position.x - 20,
           y: position.y - 20,
@@ -217,7 +217,7 @@ export default function CursorEffect() {
 
       {/* Large background glow that follows cursor */}
       <motion.div
-        className="fixed pointer-events-none z-20"
+        className="fixed pointer-events-none z-[99999]"
         animate={{
           x: position.x - 100,
           y: position.y - 100,
@@ -230,7 +230,7 @@ export default function CursorEffect() {
 
       {/* Trailing light effect */}
       <motion.div
-        className="fixed pointer-events-none z-30"
+        className="fixed pointer-events-none z-[99999]"
         animate={{
           x: position.x - 75,
           y: position.y - 75,
@@ -251,7 +251,7 @@ export default function CursorEffect() {
       <AnimatePresence>
         {isHovering && (
           <motion.div
-            className="fixed pointer-events-none z-45"
+            className="fixed pointer-events-none z-[99999]"
             initial={{ scale: 0, opacity: 0.8 }}
             animate={{
               scale: 2,

@@ -103,22 +103,8 @@ export default function HolographicBackground() {
         ctx.fill()
       }
 
-      // Add some glow spots
-      const glowCount = 3
-      for (let i = 0; i < glowCount; i++) {
-        const x = ((Math.sin(time / 3000 + i * 2) + 1) * canvas.width) / 2
-        const y = ((Math.cos(time / 4000 + i * 3) + 1) * canvas.height) / 2
-        const size = canvas.width * 0.3
-
-        const gradient = ctx.createRadialGradient(x, y, 0, x, y, size)
-        gradient.addColorStop(0, "rgba(168, 85, 247, 0.05)")
-        gradient.addColorStop(1, "rgba(168, 85, 247, 0)")
-
-        ctx.beginPath()
-        ctx.arc(x, y, size, 0, Math.PI * 2)
-        ctx.fillStyle = gradient
-        ctx.fill()
-      }
+      // Glow spots disabled for testing.
+      // To re-enable, restore the previous glow drawing loop above.
 
       time += 16
       animationFrame = requestAnimationFrame(drawGrid)
