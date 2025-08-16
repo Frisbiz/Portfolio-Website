@@ -84,7 +84,7 @@ export default function Home() {
             </p>
 
             <div className="pt-8">
-              <div id="get-in-touch-glow-target" className="relative inline-block">
+              <div id="get-in-touch-glow-target" className="relative inline-block z-50">
                 <div className="flex items-center justify-center">
                     <Button onClick={() => setContactOpen(true)} className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 border border-purple-400/20 shadow-[0_0_15px_rgba(168,85,247,0.5)]">
                       Get in touch
