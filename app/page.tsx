@@ -110,7 +110,7 @@ export default function Home() {
 
           <Reveal variant="fade-up" delay={100}>
             <ProjectCard
-              title="Animal Rescue Dashboard – JavaScript Web App"
+              title="Animal Rescue Dashboard - JavaScript Web App"
               description="(HTML, CSS, JavaScript, Chart.js) Interactive dashboard visualizing rescue dog statistics by breed, age, and shelter status. Implemented dynamic Chart.js visualizations, mobile‑responsive UI, accessibility considerations, and UX tailored for shelter staff to interpret intake trends quickly."
               isReversed={false}
               repoUrl="https://github.com/Frisbiz/Rescue-Dogs-Finder-Dashboard"
@@ -120,8 +120,8 @@ export default function Home() {
           <div className="mt-20">
             <Reveal variant="fade-up" delay={200}>
               <ProjectCard
-                title="Travlr Getaways — Full Stack Travel Web App"
-                description="(MEAN Stack — MongoDB, Express.js, Angular, Node.js, JWT) Full‑stack travel booking platform with dynamic trip listings, user registration, and reservations. Built RESTful APIs for destination filtering and booking workflows, implemented secure JWT authentication, and a responsive Angular admin panel styled with Tailwind CSS."
+                title="Travlr Getaways - Full Stack Travel App"
+                description="(MEAN Stack - MongoDB, Express.js, Angular, Node.js, JWT) Full‑stack travel booking platform with dynamic trip listings, user registration, and reservations. Built RESTful APIs for destination filtering and booking workflows, implemented secure JWT authentication, and a responsive Angular admin panel styled with Tailwind CSS."
                 isReversed={true}
                 repoUrl="https://github.com/Frisbiz/Travlr"
               />
@@ -178,7 +178,7 @@ export default function Home() {
             </Reveal>
             <Reveal variant="fade-up" delay={300}>
               <WorkExperienceCard
-                title="President, Computer Science Club — Southern New Hampshire University"
+                title="President, Computer Science Club - Southern New Hampshire University"
                 period="Sept 2024 – May 2025"
                 description="Led officers to run bi‑weekly meetings, technical workshops, guest talks, and student-led hackathons; organized coding challenges and inclusive programming that grew membership by 40%."
               />
